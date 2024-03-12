@@ -17,6 +17,10 @@ This is a quiz application that provides two separate interfaces for users and a
 3. **Admin View:**
    - Admins can add questions and four options, one of which must be correct.
    - Correct answers give 5 points, wrong answers deduct 2 points, and if no option is selected, zero points are awarded.
+  
+# Issue
+
+   If you want to see the admin page, after first signing in, go to Database and set isAdmin in to true and login otherwise you can see only the user login
 
 
 ## Instructions for Deployment
