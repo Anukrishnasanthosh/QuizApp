@@ -6,8 +6,7 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var fetchuser = require('../routes/fetchuser');
 
-router.post(
-  "/createuser",
+router.post("/createuser",
   [
     body("name").isLength({ min: 3 }),
     body("email").isEmail(),
@@ -25,16 +24,20 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ success, error: "sorry a user with this email already exists" });
+          .json({ success, error: "Sorry, a user with this email already exists" });
+      }
+      let isAdmin = false;
+      if (req.body.email === "anukrishnasanthosh@gmail.com") {
+        isAdmin = true;
       }
       const salt = await bcrypt.genSalt(10);
-      const secPass = await bcrypt.hash(req.body.password, salt)
+      const secPass = await bcrypt.hash(req.body.password, salt);
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: secPass,
+        isAdmin: isAdmin, 
       });
-
       const data = {
         user: {
           id: user.id
@@ -46,13 +49,11 @@ router.post(
       res.json({success, authToken});
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("some error occured")
+      res.status(500).send("Some error occurred");
     }
   }
 );
-
-router.post(
-  "/login",
+router.post( "/login",
   [
     body("email", 'Enter a valid email').isEmail(),
     body("password", 'Password cannot be blank').exists(),
@@ -91,9 +92,7 @@ router.post(
       res.status(500).send("Internal Server Error")
      }
   });
-
   router.post( "/getuser", fetchuser, async (req, res) => {
-
       try {
         const userId = req.user.id;
         const user = await User.findById(userId).select("-password")
@@ -103,6 +102,4 @@ router.post(
         res.status(500).send("Internal Server Error")
       }
     });      
-
-
 module.exports = router;
